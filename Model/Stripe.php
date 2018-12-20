@@ -33,7 +33,8 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
     /**
      * @return bool
      */
-    public function validateRequiredSDK(){
+    public function validateRequiredSDK()
+    {
         return (class_exists("\\Stripe\\Stripe") && class_exists("\\Stripe\\Charge"))?true:false;
     }
 
@@ -41,7 +42,8 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
      * @param string $key
      * @return array
      */
-    public function getConfig($key = ''){
+    public function getConfig($key = '')
+    {
         $configs = $this->helper->getStripeConfig();
         return ($key)?$configs[$key]:$configs;
     }
@@ -53,10 +55,11 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
      * @return string
      * @throws \Exception
      */
-    public function completePayment($token, $amount){
+    public function completePayment($token, $amount)
+    {
         $response = '';
         $transactionId = '';
-        if($amount && $token) {
+        if ($amount && $token) {
             $storeManager = \Magento\Framework\App\ObjectManager::getInstance()
                 ->get('\Magento\Store\Model\StoreManagerInterface');
             $currency = $storeManager->getStore()->getBaseCurrencyCode();
@@ -70,14 +73,14 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
             $amount = $amount * $cents;
             try {
                 \Stripe\Stripe::setApiKey($secretKey);
-                $response = \Stripe\Charge::create(array(
+                $response = \Stripe\Charge::create([
                     "amount" => $amount,
                     "currency" => $currency,
                     "source" => $token,
                     "description" => __('Charge for POS')
-                ));
-            }catch (\Exception $e) {
-                if($e->getHttpStatus() == 401) {
+                ]);
+            } catch (\Exception $e) {
+                if ($e->getHttpStatus() == 401) {
                     throw new \Magento\Framework\Exception\StateException(
                         __('Connection failed. Please contact admin to check the configuration of API.')
                     );
@@ -87,8 +90,8 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
                 );
             }
         }
-        if($response) {
-            if(isset($response['id'])) {
+        if ($response) {
+            if (isset($response['id'])) {
                 $transactionId = $response['id'];
             }
         } else {
@@ -104,13 +107,14 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
      *
      * @return bool
      */
-    public function canConnectToApi(){
+    public function canConnectToApi()
+    {
         $apiKey = $this->getConfig('api_key');
         \Stripe\Stripe::setApiKey($apiKey);
         $connected = true;
-        try{
+        try {
             $this->testCreate();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $connected = false;
         }
         return $connected;
@@ -122,18 +126,18 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
      */
     public function testCreate()
     {
-        $card = array(
+        $card = [
             'number' => '4242424242424242',
             'exp_month' => 5,
             'exp_year' => date('Y') + 1
-        );
+        ];
 
         \Stripe\Charge::create(
-            array(
+            [
                 'amount' => 100,
                 'currency' => 'usd',
                 'card' => $card
-            )
+            ]
         );
     }
 
@@ -146,17 +150,15 @@ class Stripe implements \Magestore\WebposStripe\Api\StripeInterface
     {
         $apiKey = $this->getConfig('api_key');
         \Stripe\Stripe::setApiKey($apiKey);
-        try
-        {
+        try {
             $token = \Stripe\Token::create($params);
 
-            if (empty($token['id']) || strpos($token['id'],'tok_') !== 0)
+            if (empty($token['id']) || strpos($token['id'], 'tok_') !== 0) {
                 throw new \Exception(__('Sorry, this payment method can not be used at the moment. Try again later.'));
+            }
 
             return $token['id'];
-        }
-        catch (\Stripe\Error\Card $e)
-        {
+        } catch (\Stripe\Error\Card $e) {
             throw new \Exception(__($e->getMessage()));
         }
     }

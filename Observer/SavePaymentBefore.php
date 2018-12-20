@@ -25,7 +25,7 @@ class SavePaymentBefore implements ObserverInterface
         \Magento\Framework\Module\Manager $manager,
         \Magestore\Webpos\Helper\Payment $paymentHelper,
         \Magestore\WebposStripe\Model\Stripe $stripe
-    ){
+    ) {
         $this->moduleManager = $manager;
         $this->paymentHelper = $paymentHelper;
         $this->stripe = $stripe;
@@ -44,7 +44,7 @@ class SavePaymentBefore implements ObserverInterface
         $methodData = $payment['method_data'];
         if ($moduleManager->isEnabled('Magestore_WebposStripe')) {
             if (isset($methodData) && $methodData) {
-                foreach ($methodData as $key=>&$method) {
+                foreach ($methodData as $key => &$method) {
                     if ($method['code'] == 'stripe_integration') {
                         $transactionId = $this->stripe->placeOrderStripeCard($method['additional_data'], $method['base_amount']);
                         if ($transactionId) {

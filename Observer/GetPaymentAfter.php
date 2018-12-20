@@ -26,7 +26,7 @@ class GetPaymentAfter implements ObserverInterface
         $payments = $observer->getData('payments');
         $paymentList = $payments->getList();
         $isStripeEnable = $stripeHelper->isEnableStripe();
-        if($isStripeEnable) {
+        if ($isStripeEnable) {
             $stripePayment = $this->addWebposStripe();
             $paymentList[] = $stripePayment->getData();
         }

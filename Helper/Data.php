@@ -33,7 +33,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager
-    ){
+    ) {
         $this->_storeManager = $storeManager;
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         parent::__construct($context);
@@ -44,7 +44,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @return \Magento\Store\Api\Data\StoreInterface
      */
-    public function getStore(){
+    public function getStore()
+    {
         return $this->_storeManager->getStore();
     }
 
@@ -54,21 +55,23 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param string $path
      * @return string
      */
-    public function getStoreConfig($path){
+    public function getStoreConfig($path)
+    {
         return $this->scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
      * @return array
      */
-    public function getStripeConfig() {
-        $configData = array();
-        $configItems = array(
+    public function getStripeConfig()
+    {
+        $configData = [];
+        $configItems = [
             'enable',
             'sort_order',
             'publishable_key',
             'api_key'
-        );
+        ];
         foreach ($configItems as $configItem) {
             $configData[$configItem] = $this->getStoreConfig('webpos/payment/stripe/' . $configItem);
         }
@@ -78,7 +81,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return bool
      */
-    public function isEnableStripe(){
+    public function isEnableStripe()
+    {
         $enable = $this->getStoreConfig('webpos/payment/stripe/enable');
         return ($enable == 1)?true:false;
     }
@@ -89,9 +93,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isZeroDecimal($currency)
     {
-        return in_array(strtolower($currency), array(
+        return in_array(strtolower($currency), [
             'bif', 'djf', 'jpy', 'krw', 'pyg', 'vnd', 'xaf',
-            'xpf', 'clp', 'gnf', 'kmf', 'mga', 'rwf', 'vuv', 'xof'));
+            'xpf', 'clp', 'gnf', 'kmf', 'mga', 'rwf', 'vuv', 'xof']);
     }
-
 }

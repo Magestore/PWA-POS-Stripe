@@ -27,7 +27,8 @@ class StripeService implements \Magestore\WebposStripe\Api\StripeServiceInterfac
     /**
      * @return bool
      */
-    public function isEnable(){
+    public function isEnable()
+    {
         $hasSDK = $this->stripe->validateRequiredSDK();
         $configs = $this->stripe->getConfig();
         return ($hasSDK && $configs['enable'] && !empty($configs['publishable_key']) && !empty($configs['api_key']))?true:false;
@@ -36,18 +37,19 @@ class StripeService implements \Magestore\WebposStripe\Api\StripeServiceInterfac
     /**
      * @return string
      */
-    public function getConfigurationError(){
+    public function getConfigurationError()
+    {
         $message = '';
         $hasSDK = $this->stripe->validateRequiredSDK();
         $configs = $this->stripe->getConfig();
-        if(!$hasSDK){
+        if (!$hasSDK) {
             $message = __('Stripe SDK not found, please go to the configuration to get the instruction to install the SDK');
-        }else{
-            if($configs['enable']){
-                if(empty($configs['publishable_key']) || empty($configs['api_key'])){
+        } else {
+            if ($configs['enable']) {
+                if (empty($configs['publishable_key']) || empty($configs['api_key'])) {
                     $message = __('Stripe application client id and client secret are required');
                 }
-            }else{
+            } else {
                 $message = __('Stripe integration is disabled');
             }
         }
@@ -59,14 +61,16 @@ class StripeService implements \Magestore\WebposStripe\Api\StripeServiceInterfac
      * @param string $amount
      * @return string
      */
-    public function finishPayment($token, $amount){
+    public function finishPayment($token, $amount)
+    {
         return $this->stripe->completePayment($token, $amount);
     }
 
     /**
      * @return bool
      */
-    public function canConnectToApi(){
+    public function canConnectToApi()
+    {
         return $this->stripe->canConnectToApi();
     }
 }

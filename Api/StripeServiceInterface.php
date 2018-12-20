@@ -33,5 +33,4 @@ interface StripeServiceInterface
      * @return string
      */
     public function finishPayment($token, $amount);
-
 }
